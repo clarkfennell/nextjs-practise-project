@@ -1,14 +1,62 @@
+import { MongoClient, ObjectId } from 'mongodb';
 import MeetupDetail from '../../components/meetups/MeetupDetail';
 
-function MeetupDetails() {
+function MeetupDetails(props) {
   return (
     <MeetupDetail
-      image={`https://upload.wikimedia.org/wikipedia/commons/a/a1/Florence_Cathedral.jpg`}
-      title={`Our First Meetup`}
-      address={`Florence, Italy`}
-      description={'Our First Meetup'}
+      image={props.meetupData.image}
+      title={props.meetupData.title}
+      address={props.meetupData.address}
+      description={props.meetupData.description}
     />
   )
+}
+
+export async function getStaticPaths() {
+  const client = await MongoClient.connect('mongodb+srv://admin:haBjUXh8qjDWM0xi@cluster0.iekjdnm.mongodb.net/meetups?retryWrites=true&w=majority');
+  const db = client.db();
+
+  const meetupsCollection = db.collection('meetups');
+
+  const meetups = await meetupsCollection.find({}, { _id: 1 }).toArray();
+
+  client.close();
+
+  return {
+    fallback: false,
+    paths: meetups.map(meetup => ({
+      params: {
+        meetupId: meetup._id.toString()
+      }
+    }))
+  }
+}
+
+export async function getStaticProps(context) {
+  // fetch data for single meetup
+
+  const meetupId = context.params.meetupId;
+
+  const client = await MongoClient.connect('mongodb+srv://admin:haBjUXh8qjDWM0xi@cluster0.iekjdnm.mongodb.net/meetups?retryWrites=true&w=majority');
+  const db = client.db();
+
+  const meetupsCollection = db.collection('meetups');
+
+  const selectedMeetup = await meetupsCollection.findOne({ _id: ObjectId(meetupId) })
+
+  client.close();
+
+  return {
+    props: {
+      meetupData: {
+        id: selectedMeetup.toString(),
+        title: selectedMeetup.title,
+        image: selectedMeetup.image,
+        description: selectedMeetup.description,
+        address: selectedMeetup.address
+      }
+    }
+  }
 }
 
 export default MeetupDetails;
