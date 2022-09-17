@@ -49,7 +49,7 @@ export async function getStaticProps() {
       }))
     },
     // incremental static generation (meaning it will be regenerated on the sever by how many seconds added)
-    revalidate: 10
+    revalidate: 1
   }
 }
 
