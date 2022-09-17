@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import MeetupList from '../components/meetups/MeetupList';
 
 const DUMMY_MEETUPS = [
@@ -25,14 +24,36 @@ const DUMMY_MEETUPS = [
   }
 ]
 
-function HomePage() {
-  const [loadedMeetups, setLoadedMeetups] = useState([]);
-    
-  useEffect(() => {
-    setLoadedMeetups(DUMMY_MEETUPS);
-  }, []);
+function HomePage(props) {
+  return <MeetupList meetups={props.meetups} />
+}
 
-  return <MeetupList meetups={loadedMeetups} />
+// /**
+//  * It's a function that runs on the server and returns an object with a property called props
+//  * @param context - An object with the following properties:
+//  */
+// export async function getServerSideProps(context) {
+//   // this generates data every time a request is sent to the server
+//   const req = context.req;
+//   const res = context.res;
+
+//   return {
+//     props: {
+//       meetups: DUMMY_MEETUPS
+//     }
+//   }
+// }
+
+export async function getStaticProps() {
+  // this generates data on initial request
+  // fetch data from an API
+  return {
+    props: {
+      meetups: DUMMY_MEETUPS
+    },
+    // incremental static generation (meaning it will be regenerated on the sever by how many seconds added)
+    // revalidate: 10
+  }
 }
 
 export default HomePage;
