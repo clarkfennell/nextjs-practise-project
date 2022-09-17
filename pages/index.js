@@ -1,16 +1,22 @@
+import { Fragment } from 'react';
+import Head from 'next/head';
 import { MongoClient } from 'mongodb';
 import MeetupList from '../components/meetups/MeetupList';
 
 function HomePage(props) {
-  return <MeetupList meetups={props.meetups} />
+  return (
+    <Fragment>
+      <Head>
+        <title>NextJS Practise Project</title>
+        <meta name="description" content="Browse a huge list of highly reactive ReactJS meetups" />
+      </Head>
+      <MeetupList meetups={props.meetups} />
+    </Fragment>
+  )
 }
 
-// /**
-//  * It's a function that runs on the server and returns an object with a property called props
-//  * @param context - An object with the following properties:
-//  */
 // export async function getServerSideProps(context) {
-//   // this generates data every time a request is sent to the server
+// this generates data every time a request is sent to the server
 //   const req = context.req;
 //   const res = context.res;
 
